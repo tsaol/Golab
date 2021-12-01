@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+    "log"
     "net/http"
+    "io/ioutil"
 	"github.com/Shopify/sarama"
     "github.com/gorilla/mux"
-    "github.com/spf13/viper"
+    "gopkg.in/yaml.v2"
 )
-type conf struct {
-    Host  string `yaml:"host"`
-    Topic string `yaml:"topic"`
-    Port  string `yaml:"port"`
+type Conf struct {
+    host  string `yaml:"host"`
+    port  string `yaml:"port"`
 }
 
 
@@ -20,7 +21,6 @@ func main() {
     r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, "Hello, I am gateway: %s\n", r.URL.Path)
     })
-
     http.ListenAndServe(":8081", r)
 }
 
@@ -31,7 +31,10 @@ func productDetail(w http.ResponseWriter, r *http.Request) {
     SendMessage()
 }
 
+
 func SendMessage(){
+    kfkconf := getConf("httpserver.yaml")
+    
 	config := sarama.NewConfig()
     config.Producer.RequiredAcks = sarama.WaitForAll          // need leader, follow ack
     config.Producer.Partitioner = sarama.NewRandomPartitioner // choose a new partition
@@ -41,9 +44,12 @@ func SendMessage(){
     msg := &sarama.ProducerMessage{}
     msg.Topic = "produdct_request"
     msg.Value = sarama.StringEncoder("this is a test log")
+    
+    kfkurl := kfkconf.host +":"+kfkconf.port
+    fmt.Printf("kfk url is :%v\n", kfkurl)
 
     // connect kafka
-    client, err := sarama.NewSyncProducer([]string{"192.168.3.209:9082"}, config)
+    client, err := sarama.NewSyncProducer([]string{kfkurl}, config)
     if err != nil {
         fmt.Println("producer closed, err:", err)
         return
@@ -60,14 +66,18 @@ func SendMessage(){
 }
 
 //read config
-func (c *conf) getConf() *conf {
-    yamlFile, err := ioutil.ReadFile("conf.yaml")
+//reference https://golangdocs.com/golang-yaml-package
+func getConf(path string) (c *Conf) {
+    yfile, err := ioutil.ReadFile(path)
+    
     if err != nil {
-        fmt.Println(err.Error())
+         log.Fatal(err)
     }
-    err = yaml.Unmarshal(yamlFile, c)
-    if err != nil {
-        fmt.Println(err.Error())
+    // confData := make(map[string]Conf)
+    var confData Conf
+    err2 := yaml.Unmarshal(yfile, confData)
+    if err2 != nil {
+         log.Fatal(err2)
     }
-    return c
+    return &confData
 }
