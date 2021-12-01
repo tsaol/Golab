@@ -44,4 +44,15 @@ http.Handle("/static/", http.StripPrefix("/static/", fs))
  http.ListenAndServe(":80", nil)
 ```
 # routing
+Package `gorilla/mux`  implements a request router and dispatcher for matching incoming requests to their respective handler.
+The biggest strength of the `gorilla/mux`  Router is the ability to extract segments from the request URL. As an example, this is a URL in your application:
+`/prdoucts/sku111210`
+`
+
+``` go
+r := mux.NewRouter()
+r.HandleFunc("/products/{key}", ProductHandler)
+r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
+```
+
 # TODO

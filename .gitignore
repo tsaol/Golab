@@ -1,2 +1,5 @@
 
 go/pkg/
+go/go.mod
+go/httpserver/go.mod
+go/httpserver/go.sum

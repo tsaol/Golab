@@ -1,0 +1,16 @@
+channelname: publicchain
+peer:
+  - peer-0-baas
+  - peer-1-baas
+orderer:
+  baas:
+    - ServerHostName: orderer-0-baas:7050
+      Address: 192.168.9.159:30004
+    - ServerHostName: orderer-1-baas:7050
+      Address: 192.168.9.159:30005
+    - ServerHostName: orderer-2-baas:7050
+      Address: 192.168.9.159:30006
+  baas2:
+    - ServerHostName: orderer-0-baas2:7050
+      Address: 192.168.9.166:30012
+
