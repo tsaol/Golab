@@ -1,4 +1,0 @@
-
-kafkaConfig:
-  host: 192.168.3.209
-  port: 9082

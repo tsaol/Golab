@@ -9,13 +9,20 @@ import (
     "github.com/gorilla/mux"
     "gopkg.in/yaml.v2"
 )
+
+var configData Conf
+
 type Conf struct {
-    host  string `yaml:"host"`
-    port  string `yaml:"port"`
+    Host  string `yaml:"Host"`
+    Port  string `yaml:"Port"`
 }
 
+func (c *Conf) Parse(data []byte) error {
+    return yaml.Unmarshal(data, c)
+}
 
 func main() {
+    _ = getConf("file.yml")
     r := mux.NewRouter()
     r.HandleFunc("/product/{product_id}", productDetail).Methods("GET")
     r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -31,10 +38,7 @@ func productDetail(w http.ResponseWriter, r *http.Request) {
     SendMessage()
 }
 
-
 func SendMessage(){
-    kfkconf := getConf("httpserver.yaml")
-    
 	config := sarama.NewConfig()
     config.Producer.RequiredAcks = sarama.WaitForAll          // need leader, follow ack
     config.Producer.Partitioner = sarama.NewRandomPartitioner // choose a new partition
@@ -45,7 +49,7 @@ func SendMessage(){
     msg.Topic = "produdct_request"
     msg.Value = sarama.StringEncoder("this is a test log")
     
-    kfkurl := kfkconf.host +":"+kfkconf.port
+    kfkurl := configData.Host +":"+configData.Port
     fmt.Printf("kfk url is :%v\n", kfkurl)
 
     // connect kafka
@@ -68,16 +72,20 @@ func SendMessage(){
 //read config
 //reference https://golangdocs.com/golang-yaml-package
 func getConf(path string) (c *Conf) {
+ 
+    fmt.Printf("path:%v\n",path)
+
     yfile, err := ioutil.ReadFile(path)
     
     if err != nil {
          log.Fatal(err)
     }
-    // confData := make(map[string]Conf)
-    var confData Conf
-    err2 := yaml.Unmarshal(yfile, confData)
-    if err2 != nil {
-         log.Fatal(err2)
+
+    // var config Conf
+    if err := configData.Parse(yfile); err != nil {
+        log.Fatal(err)
     }
-    return &confData
+    fmt.Printf("config is:%+v\n", configData)
+    
+    return &configData
 }
