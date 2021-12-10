@@ -42,7 +42,7 @@ http.Handle("/static/", http.StripPrefix("/static/", fs))
  The HTTP Server must listen on a specific port (like 80 or 8080 )to be able to accept connections from the internet. **Go has also an inbuilt HTTP server**, we can start faily quickly.
  ``` go
  http.ListenAndServe(":80", nil)
-```
+ ```
 # routing
 Package `gorilla/mux`  implements a request router and dispatcher for matching incoming requests to their respective handler.
 The biggest strength of the `gorilla/mux`  Router is the ability to extract segments from the request URL. As an example, this is a URL in your application:
@@ -56,3 +56,15 @@ r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 ```
 
 # TODO
+## Architecture
+
+![api-gateway](./images/api-gateway.jpg)
+
+## Core
+
+
+
+
+* API
+* authenticate & authorization
+* waf
