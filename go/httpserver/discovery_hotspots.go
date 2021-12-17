@@ -20,6 +20,10 @@ type Conf struct {
 func (c *Conf) Parse(data []byte) error {
     return yaml.Unmarshal(data, c)
 }
+//http://localhost:8081/product/sku111210
+//if use wrk
+//wrk -t12 -c400 -d30s http://localhost:8081/product/sku111210
+
 
 func main() {
     _ = getConf("file.yml")

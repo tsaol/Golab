@@ -61,10 +61,6 @@ r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 ![api-gateway](./images/api-gateway.jpg)
 
 ## Core
-
-
-
-
 * API
 * authenticate & authorization
 * waf
