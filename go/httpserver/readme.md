@@ -55,6 +55,11 @@ r.HandleFunc("/products/{key}", ProductHandler)
 r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
 ```
 
+## Optimization
+#### Concurrent
+
+
+
 # TODO
 ## Architecture
 

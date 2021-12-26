@@ -1,6 +1,7 @@
 
 -- http://localhost:8081/product/sku111210
 --wrk -t1 -c1 -d5s -s ./testcase/wrkscript.lua http://localhost:8081
+--wrk -t2 -c10 -d5s -s ./testcase/wrkscript.lua http://localhost:8081
 
 request = function()
     wrk.headers["Connection"] = "Keep-Alive"
